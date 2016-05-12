@@ -5,11 +5,18 @@ function PhotoGrid(cfg) {
 
     this.images = cfg.images;
     this.$el = cfg.element;
+    this.$document = $(document);
     this.maxGridCells = 5;
 
     this.render = function() {
+
         this._setGridClass();
         this._renderGridImages();
+
+        this.$document
+            .off('keyup', this._keyPress)
+            .on('keyup', this._keyPress.bind(this));
+
     };
 
     this._setGridClass = function() {
@@ -75,6 +82,26 @@ function PhotoGrid(cfg) {
 
     };
 
+    this._keyPress = function(event) {
+
+        if (!this.modal.$modal) {
+            return;
+        }
+
+        switch (event.keyCode) {
+            case 27: // Esc
+                this.modal.close();
+                break;
+            case 37: // Left
+                this.modal.prev();
+                break;
+            case 39: // Right
+                this.modal.next();
+                break;
+        }
+
+    };
+
     this._imageClick = function(event) {
         var data = $(event.currentTarget).data();
         this.modal.open(data.index);
@@ -122,6 +149,10 @@ function PhotoGrid(cfg) {
 
         prev: function() {
 
+            if (this.images.length <= 1) {
+                return;
+            }
+
             if (this.imageIndex > 0) {
                 --this.imageIndex;
             } else {
@@ -133,6 +164,10 @@ function PhotoGrid(cfg) {
         },
 
         next: function() {
+
+            if (this.images.length <= 1) {
+                return;
+            }
 
             if (this.imageIndex < this.images.length - 1) {
                 ++this.imageIndex;
