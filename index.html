@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Grid Gallery</title>
+
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <script src="https://code.jquery.com/jquery-1.12.3.min.js"></script>
+
+        <script src="photo-grid.js"></script>
+        <link rel="stylesheet" href="photo-grid.css">
+
+        <style>
+            p {
+                text-align: center;
+                font-weight: bold;
+                font-family: sans-serif;
+            }
+        </style>
+
+        <script>
+
+            var images = [
+                'photos/1.jpg',
+                'photos/2.jpg',
+                'photos/3.jpg',
+                'photos/4.jpg',
+                'photos/5.jpg',
+                'photos/6.jpg'
+            ];
+
+            function getImages(count) {
+                var imgs = [];
+                for (var i = 0; i < images.length; ++i) {
+                    if (i == count) {
+                        break;
+                    }
+                    imgs.push(images[i]);
+                }
+                return imgs;
+            }
+
+            $(function() {
+
+                new PhotoGrid({
+                    images: images,
+                    element: $('#gallery6'),
+                    autoRender: true
+                });
+                new PhotoGrid({
+                    images: getImages(5),
+                    element: $('#gallery5'),
+                    autoRender: true
+                });
+                new PhotoGrid({
+                    images: getImages(4),
+                    element: $('#gallery4'),
+                    autoRender: true
+                });
+                new PhotoGrid({
+                    images: getImages(3),
+                    element: $('#gallery3'),
+                    autoRender: true
+                });
+                new PhotoGrid({
+                    images: getImages(2),
+                    element: $('#gallery2'),
+                    autoRender: true
+                });
+                new PhotoGrid({
+                    images: getImages(1),
+                    element: $('#gallery1'),
+                    autoRender: true
+                });
+
+            });
+
+        </script>
+    </head>
+    <body>
+
+        <p>More than five images</p>
+        <div id="gallery6"></div>
+
+        <p>5 images</p>
+        <div id="gallery5"></div>
+
+        <p>4 images</p>
+        <div id="gallery4"></div>
+
+        <p>3 images</p>
+        <div id="gallery3"></div>
+
+        <p>2 images</p>
+        <div id="gallery2"></div>
+
+        <p>1 image</p>
+        <div id="gallery1"></div>
+
+    </body>
+</html>
