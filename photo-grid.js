@@ -4,18 +4,26 @@ function PhotoGrid(cfg) {
     cfg = cfg || {};
 
     this.images = cfg.images;
-    this.$el = cfg.element;
-    this.$document = $(document);
+    this.isAlignImages = cfg.alignImages;
     this.maxGridCells = 5;
+
+    this.$el = cfg.element;
+    this.$gridItems = [];
+
+    var imageLoadCount = 0;
 
     this.render = function() {
 
         this._setGridClass();
         this._renderGridImages();
 
-        this.$document
+        $(document)
             .off('keyup', this._keyPress)
             .on('keyup', this._keyPress.bind(this));
+
+        $(window)
+            .off('resize', this._resize)
+            .on('resize', this._resize.bind(this));
 
     };
 
@@ -24,9 +32,13 @@ function PhotoGrid(cfg) {
         var classEnd = (this.images.length > this.maxGridCells)?
             this.maxGridCells: this.images.length;
 
-        this.$el
-            .removeClass()
-            .addClass('photo-grid photo-grid-' + classEnd);
+        this.$el.removeClass(function(index, classNames) {
+            if (/(photo-grid-\d)/.test(classNames)) {
+                return RegExp.$1;
+            }
+        });
+
+        this.$el.addClass('photo-grid photo-grid-' + classEnd);
 
     };
 
@@ -37,26 +49,37 @@ function PhotoGrid(cfg) {
         }
 
         this.$el.empty();
+        this.$gridItems = [];
 
-        for (var i = 0; i < this.images.length; ++i) {
+        var i, item;
+        for (i = 0; i < this.images.length; ++i) {
 
             if (i == this.maxGridCells) {
                 break;
             }
 
-            this.$el.append(
+            item = $('<div>', {
+                class: 'photo-grid-image',
+                click: this._imageClick.bind(this),
+                data: { index: i }
+            });
+
+            item.append(
                 $('<div>', {
-                    class: 'photo-grid-image',
-                    click: this._imageClick.bind(this),
-                    data: { index: i }
+                    class: 'image-wrap'
                 }).append(
                     $('<img>', {
-                        src: this.images[i]
+                      src: this.images[i],
+                      load: this._imageLoaded.bind(this)
                     })
                 )
             );
 
+            this.$gridItems.push(item);
+
         }
+
+        this.$el.append(this.$gridItems);
 
         if (this.images.length > this.maxGridCells) {
             this._renderSeeAll();
@@ -66,7 +89,7 @@ function PhotoGrid(cfg) {
 
     this._renderSeeAll = function() {
 
-        this.$el.find('.photo-grid-image:last').append(
+        this.$el.find('.photo-grid-image:last .image-wrap').append(
             $('<div>', {
                 class: 'see-all'
             }).append(
@@ -92,19 +115,60 @@ function PhotoGrid(cfg) {
             case 27: // Esc
                 this.modal.close();
                 break;
-            case 37: // Left
+            case 37: // Left arrow
                 this.modal.prev();
                 break;
-            case 39: // Right
+            case 39: // Right arrow
                 this.modal.next();
                 break;
         }
 
     };
 
+    this._resize = function(event) {
+        this._alignImages();
+    };
+
     this._imageClick = function(event) {
         var data = $(event.currentTarget).data();
         this.modal.open(data.index);
+    };
+
+    this._imageLoaded = function() {
+        ++imageLoadCount;
+        if (imageLoadCount == this.$gridItems.length) {
+            imageLoadCount = 0;
+            this._allImagesLoaded()
+        }
+    };
+
+    this._allImagesLoaded = function() {
+        this._alignImages();
+    };
+
+    this._alignImages = function() {
+
+        if (!this.isAlignImages || this.images.length == 1) {
+            return;
+        }
+
+        var height = this.$gridItems.map(
+            function(item) { return item.find('img').height(); }
+        );
+
+        var itemHeight = Math.min.apply(null, height);
+
+        $(this.$gridItems).each(function() {
+            var item = $(this),
+                imgWrap = item.find('.image-wrap'),
+                img = item.find('img'),
+                imgHeight = img.height();
+            imgWrap.height(itemHeight);
+            if (imgHeight > itemHeight) {
+                img.css({ top: -((imgHeight - itemHeight) / 2) });
+            }
+        });
+
     };
 
     this.modal = {
@@ -125,8 +189,6 @@ function PhotoGrid(cfg) {
 
             this._render();
 
-            this.$body.css('overflow', 'hidden');
-
         },
 
         close: function() {
@@ -143,15 +205,9 @@ function PhotoGrid(cfg) {
                 }.bind(this)
             });
 
-            this.$body.css('overflow', 'visible');
-
         },
 
         prev: function() {
-
-            if (this.images.length <= 1) {
-                return;
-            }
 
             if (this.imageIndex > 0) {
                 --this.imageIndex;
@@ -164,10 +220,6 @@ function PhotoGrid(cfg) {
         },
 
         next: function() {
-
-            if (this.images.length <= 1) {
-                return;
-            }
 
             if (this.imageIndex < this.images.length - 1) {
                 ++this.imageIndex;
