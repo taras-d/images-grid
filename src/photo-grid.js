@@ -4,7 +4,7 @@ function PhotoGrid(cfg) {
     cfg = cfg || {};
 
     this.images = cfg.images;
-    this.isAlignImages = cfg.alignImages;
+    this.isAlign = cfg.align;
     this.maxGridCells = 5;
 
     this.$el = cfg.element;
@@ -126,7 +126,7 @@ function PhotoGrid(cfg) {
     };
 
     this._resize = function(event) {
-        this._alignImages();
+        this._align();
     };
 
     this._imageClick = function(event) {
@@ -143,29 +143,51 @@ function PhotoGrid(cfg) {
     };
 
     this._allImagesLoaded = function() {
-        this._alignImages();
+        this._align();
     };
 
-    this._alignImages = function() {
+    this._align = function() {
 
-        if (!this.isAlignImages || this.images.length == 1) {
+        if (!this.isAlign) {
             return;
         }
 
-        var height = this.$gridItems.map(
-            function(item) { return item.find('img').height(); }
-        );
+        var len = this.$gridItems.length;
+
+        switch (len) {
+            case 2:
+            case 3:
+                this._alignItems(this.$gridItems);
+                break;
+            case 4:
+                this._alignItems(this.$gridItems.slice(0, 2));
+                this._alignItems(this.$gridItems.slice(2));
+                break;
+            case 5:
+                this._alignItems(this.$gridItems.slice(0, 3));
+                this._alignItems(this.$gridItems.slice(3));
+                break;
+        }
+
+    };
+
+    this._alignItems = function(items) {
+
+        var height = items.map(function(item) {
+            return item.find('img').height();
+        });
 
         var itemHeight = Math.min.apply(null, height);
 
-        $(this.$gridItems).each(function() {
+        $(items).each(function() {
             var item = $(this),
                 imgWrap = item.find('.image-wrap'),
                 img = item.find('img'),
                 imgHeight = img.height();
             imgWrap.height(itemHeight);
             if (imgHeight > itemHeight) {
-                img.css({ top: -((imgHeight - itemHeight) / 2) });
+                var top = Math.floor((imgHeight - itemHeight) / 2);
+                img.css({ top: -top });
             }
         });
 
