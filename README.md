@@ -1,6 +1,6 @@
 # photo-grid
-Display photos in grid view
-
+Display first 5 photos in grid view.<br>
+Rest of photos can be view in modal box.
 ```
  _____________________________
 |         |         |         |
