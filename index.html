@@ -1,15 +1,15 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Photo grid</title>
+        <title>Images grid</title>
 
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
         <script src="https://code.jquery.com/jquery-1.12.3.min.js"></script>
 
-        <script src="src/photo-grid.js"></script>
-        <link rel="stylesheet" href="src/photo-grid.css">
+        <script src="src/images-grid.js"></script>
+        <link rel="stylesheet" href="src/images-grid.css">
 
         <style>
             p {
@@ -21,6 +21,7 @@
 
         <script>
 
+
             var images = [
                 'photos/1.jpg',
                 'photos/2.jpg',
@@ -30,39 +31,28 @@
                 'photos/6.jpg'
             ];
 
+
             $(function() {
 
-                new PhotoGrid({
-                    images: images,
-                    element: $('#gallery1'),
-                    autoRender: true
+                $('#gallery1').imagesGrid({
+                    images: images
                 });
-                new PhotoGrid({
-                    images: images.slice(0, 5),
-                    element: $('#gallery2'),
-                    autoRender: true
+                $('#gallery2').imagesGrid({
+                    images: images.slice(0, 5)
                 });
-                new PhotoGrid({
-                    images: images.slice(0, 4),
-                    element: $('#gallery3'),
-                    autoRender: true
+                $('#gallery3').imagesGrid({
+                    images: images.slice(0, 4)
                 });
-                new PhotoGrid({
-                    images: images.slice(0, 3),
-                    element: $('#gallery4'),
-                    autoRender: true
+                $('#gallery4').imagesGrid({
+                    images: images.slice(0, 3)
                 });
-                new PhotoGrid({
-                    images: images.slice(0, 2),
-                    element: $('#gallery5'),
-                    autoRender: true
+                $('#gallery5').imagesGrid({
+                    images: images.slice(0, 2)
                 });
-                new PhotoGrid({
-                    images: images.slice(0, 1),
-                    element: $('#gallery6'),
-                    autoRender: true
+                $('#gallery6').imagesGrid({
+                    images: images.slice(0, 1)
                 });
-                new PhotoGrid({
+                $('#gallery7').imagesGrid({
                     images: [
                         'photos/diff-size/1.jpg',
                         'photos/diff-size/2.jpg',
@@ -71,9 +61,10 @@
                         'photos/diff-size/5.jpg',
                         'photos/diff-size/6.jpg'
                     ],
-                    element: $('#gallery7'),
-                    autoRender: true,
-                    align: true
+                    align: true,
+                    getSeeAllText: function() {
+                        return 'View all images'
+                    }
                 });
 
             });
