@@ -32,8 +32,8 @@
 
     $.fn.imagesGrid.defaults = {
         align: false,
-        getSeeAllText: function(imagesCount) {
-            return 'Seel all ' + imagesCount + ' images';
+        getViewAllText: function(imagesCount) {
+            return 'View all ' + imagesCount + ' images';
         }
     };
 
@@ -117,23 +117,23 @@
             this.$el.append(this.$gridItems);
 
             if (this.images.length > this.maxGridCells) {
-                this.renderSeeAll();
+                this.renderViewAll();
             }
 
         };
 
-        this.renderSeeAll = function() {
+        this.renderViewAll = function() {
 
             this.$el.find('.imgs-grid-image:last .image-wrap').append(
                 $('<div>', {
-                    class: 'see-all'
+                    class: 'view-all'
                 }).append(
                     $('<span>', {
-                        class: 'see-all-cover',
+                        class: 'view-all-cover',
                     }),
                     $('<span>', {
-                        class: 'see-all-text',
-                        text: cfg.getSeeAllText(this.images.length)
+                        class: 'view-all-text',
+                        text: cfg.getViewAllText(this.images.length)
                     })
                 )
             );

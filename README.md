@@ -19,7 +19,7 @@ $('#images').imagesGrid({
 ```
 Options
 ```javascript
-images: [],                      // array of images urls
-aling: false,                    // align diff-size images
-getSeeAllText: function() {...}  // returns "See all N images" text if images more than five 
+images: [],                       // array of images urls
+aling: false,                     // align diff-size images
+getViewAllText: function() {...}  // returns text for "view all images" link if images more than five
 ```

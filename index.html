@@ -19,8 +19,31 @@
             }
         </style>
 
-        <script>
+    </head>
+    <body>
 
+        <p>More than five images</p>
+        <div id="gallery1"></div>
+
+        <p>5 images</p>
+        <div id="gallery2"></div>
+
+        <p>4 images</p>
+        <div id="gallery3"></div>
+
+        <p>3 images</p>
+        <div id="gallery4"></div>
+
+        <p>2 images</p>
+        <div id="gallery5"></div>
+
+        <p>1 image</p>
+        <div id="gallery6"></div>
+
+        <p>Images with different sizes (align)</p>
+        <div id="gallery7"></div>
+
+        <script>
 
             var images = [
                 'photos/1.jpg',
@@ -30,7 +53,6 @@
                 'photos/5.jpg',
                 'photos/6.jpg'
             ];
-
 
             $(function() {
 
@@ -62,37 +84,12 @@
                         'photos/diff-size/6.jpg'
                     ],
                     align: true,
-                    getSeeAllText: function() {
-                        return 'View all images'
-                    }
+                    getViewAllText: function(imgsCount) { return 'View all' }
                 });
 
             });
 
         </script>
-    </head>
-    <body>
-
-        <p>More than five images</p>
-        <div id="gallery1"></div>
-
-        <p>5 images</p>
-        <div id="gallery2"></div>
-
-        <p>4 images</p>
-        <div id="gallery3"></div>
-
-        <p>3 images</p>
-        <div id="gallery4"></div>
-
-        <p>2 images</p>
-        <div id="gallery5"></div>
-
-        <p>1 image</p>
-        <div id="gallery6"></div>
-
-        <p>Images with different sizes (align)</p>
-        <div id="gallery7"></div>
 
     </body>
 </html>
