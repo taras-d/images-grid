@@ -1,21 +1,25 @@
-# photo-grid
-Display first 5 photos in grid view.<br>
-Rest of photos can be view in modal box.
+# images-grid
+Display first 5 images in grid view.<br>
+Rest of images can be view in modal box.
 ```
  _____________________________
 |         |         |         |
-| photo 1 | photo 2 | photo 3 |
+| image 1 | image 2 | image 3 |
 |_________|_________|_________|
 |              |              |
-|    photo 4   |    photo 5   |
+|    image 4   |    image 5   |
 |______________|______________|
 
 ```
+Usage
 ```javascript
-new PhotoGrid({
-  images: ['img1.png', ... , 'imgN.png'],
-  element: $('#photos'),
-  autoRender: true,
-  aling: true // align different-size images
+$('#images').imagesGrid({
+  images: ['img1.png', ... , 'imgN.png']
 });
+```
+Options
+```javascript
+images: [],                      // array of images urls
+aling: false,                    // align diff-size images
+getSeeAllText: function() {...}  // returns "See all N images" text if images more than five 
 ```
