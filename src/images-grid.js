@@ -31,6 +31,8 @@
     };
 
     $.fn.imagesGrid.defaults = {
+        images: [],
+        cells: 5,
         align: false,
         getViewAllText: function(imagesCount) {
             return 'View all ' + imagesCount + ' images';
@@ -43,7 +45,7 @@
 
         this.images = cfg.images;
         this.isAlign = cfg.align;
-        this.maxGridCells = 5;
+        this.maxGridCells = (cfg.cells < 1)? 1: (cfg.cells > 6)? 6: cfg.cells;
         this.imageLoadCount = 0;
         this.modal = null;
 
@@ -179,6 +181,7 @@
                     this.alignItems(this.$gridItems.slice(2));
                     break;
                 case 5:
+                case 6:
                     this.alignItems(this.$gridItems.slice(0, 3));
                     this.alignItems(this.$gridItems.slice(3));
                     break;

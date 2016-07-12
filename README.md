@@ -1,25 +1,16 @@
 # images-grid
-Display first 5 images in grid view.<br>
-Rest of images can be view in modal box.
-```
- _____________________________
-|         |         |         |
-| image 1 | image 2 | image 3 |
-|_________|_________|_________|
-|              |              |
-|    image 4   |    image 5   |
-|______________|______________|
-
-```
-Usage
+Display first 6 images in grid view.<br>
+Rest of images can be viewed in modal box.
+#### Usage
 ```javascript
 $('#images').imagesGrid({
   images: ['img1.png', ... , 'imgN.png']
 });
 ```
-Options
+#### Options
 ```javascript
-images: [],                       // array of images urls
+images: [],                       // images urls
+cells: 5,                         // max grid cells (1-6)
 aling: false,                     // align diff-size images
-getViewAllText: function() {...}  // returns text for "view all images" link if images more than five
+getViewAllText: function() {...}  // returns text for "view all images" link
 ```
