@@ -1,6 +1,5 @@
 # images-grid
-Display first 6 images in grid view.<br>
-Rest of images can be viewed in modal box.
+![Images grid](https://github.com/taras-d/images-grid/raw/master/demo.png "Images grid")
 #### Usage
 ```javascript
 $('#images').imagesGrid({
