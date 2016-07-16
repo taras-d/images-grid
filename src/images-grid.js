@@ -263,7 +263,8 @@
             this.renderInnerContainer();
             this.renderIndicatorContainer();
 
-            this.$document.on('keyup', this.keyUp.bind(this));
+            this.keyUp = this.keyUp.bind(this);
+            this.$document.on('keyup', this.keyUp);
 
             this.$modal.animate({ opacity: 1 }, { duration: 100 });
 
