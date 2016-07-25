@@ -1,6 +1,7 @@
 
 (function($) {
 
+    // Plugin
     $.fn.imagesGrid = function(options) {
 
         var args = arguments;
@@ -8,20 +9,21 @@
         return this.each(function() {
 
             if ($.isPlainObject(options)) {
+                // Create ImagesGrid
                 var cfg = $.extend({}, $.fn.imagesGrid.defaults, options);
                 cfg.element = $(this);
-                this._imgsGridInst = new ImagesGrid(cfg);
-                this._imgsGridInst.render();
+                this._imgGrid = new ImagesGrid(cfg);
+                this._imgGrid.render();
                 return;
             }
 
-            if (this._imgsGridInst) {
+            if (this._imgGrid) {
                 switch (options) {
                     case 'modal.open':
-                        this._imgsGridInst.modal.open(args[1]);
+                        this._imgGrid.modal.open(args[1]);
                         break;
                     case 'modal.close':
-                        this._imgsGridInst.modal.close();
+                        this._imgGrid.modal.close();
                         break;
                 }
             }
@@ -30,15 +32,37 @@
 
     };
 
+    // Plugin default options
     $.fn.imagesGrid.defaults = {
         images: [],
         cells: 5,
         align: false,
+        nextOnClick: true,
         getViewAllText: function(imagesCount) {
             return 'View all ' + imagesCount + ' images';
-        }
+        },
+        onGridRendered: $.noop,
+        onGridItemRendered: $.noop,
+        onGridLoaded: $.noop,
+        onGridImageLoaded: $.noop,
+        onModalOpen: $.noop,
+        onModalClose: $.noop,
+        onModalImageClick: $.noop
     };
 
+    /*
+      ImagesGrid constructor
+       *cfg         - Configuration object
+       *cfg.element - jQuery element
+       *cfg.images  - Array of images urls of images option objects
+        cfg.align   - Aling diff-size images
+        cfg.cells   - Max grid cells (1-6)
+        cfg.getViewAllText     - Returns text for "view all images" link,
+        cfg.onGridRendered     - Called when grid items added to the DOM
+        cfg.onGridItemRendered - Called when grid item added to the DOM
+        cfg.onGridLoaded       - Called when grid images loaded
+        cfg.onGridImageLoaded  - Called when grid image loaded
+    */
     function ImagesGrid(cfg) {
 
         cfg = cfg || {};
@@ -56,9 +80,15 @@
         this.render = function() {
 
             this.setGridClass();
-            this.renderGridImages();
+            this.renderGridItems();
 
-            this.modal = new ImagesGridModal({ images: this.images });
+            this.modal = new ImagesGridModal({
+                images: cfg.images,
+                nextOnClick: cfg.nextOnClick,
+                onModalOpen: cfg.onModalOpen,
+                onModalClose: cfg.onModalClose,
+                onModalImageClick: cfg.onModalImageClick
+            });
 
             this.$window.on('resize', this.resize.bind(this));
 
@@ -79,7 +109,7 @@
 
         };
 
-        this.renderGridImages = function() {
+        this.renderGridItems = function() {
 
             if (!this.images) {
                 return;
@@ -88,39 +118,61 @@
             this.$el.empty();
             this.$gridItems = [];
 
-            var i, item;
-            for (i = 0; i < this.images.length; ++i) {
-
+            for (var i = 0; i < this.images.length; ++i) {
                 if (i == this.maxGridCells) {
                     break;
                 }
-
-                item = $('<div>', {
-                    class: 'imgs-grid-image',
-                    click: this.imageClick.bind(this),
-                    data: { index: i }
-                });
-
-                item.append(
-                    $('<div>', {
-                        class: 'image-wrap'
-                    }).append(
-                        $('<img>', {
-                          src: this.images[i],
-                          load: this.imageLoaded.bind(this)
-                        })
-                    )
-                );
-
-                this.$gridItems.push(item);
-
+                this.renderGridItem(this.images[i], i);
             }
-
-            this.$el.append(this.$gridItems);
 
             if (this.images.length > this.maxGridCells) {
                 this.renderViewAll();
             }
+
+            cfg.onGridRendered(this.$el);
+
+        };
+
+        this.renderGridItem = function(image, index) {
+
+            var src = image,
+                alt = '',
+                title = '';
+
+            if ($.isPlainObject(image)) {
+                src = image.src;
+                alt = image.alt || '';
+                title = image.title || '';
+            }
+
+            var item = $('<div>', {
+                class: 'imgs-grid-image',
+                click: this.imageClick.bind(this),
+                data: { index: index }
+            });
+
+            var self = this;
+
+            item.append(
+                $('<div>', {
+                    class: 'image-wrap'
+                }).append(
+                    $('<img>', {
+                        src: src,
+                        alt: alt,
+                        title: title,
+                        load: function(event) {
+                            self.imageLoaded(event, $(this), image);
+                        }
+                    })
+                )
+            );
+
+            this.$gridItems.push(item);
+
+            this.$el.append(item);
+
+            cfg.onGridItemRendered(item, image);
 
         };
 
@@ -153,18 +205,27 @@
             this.modal.open(imageIndex);
         };
 
-        this.imageLoaded = function() {
+        this.imageLoaded = function(event, imageEl, image) {
+
             ++this.imageLoadCount;
+
             if (this.imageLoadCount == this.$gridItems.length) {
                 this.imageLoadCount = 0;
                 this.allImagesLoaded()
             }
+
+            cfg.onGridImageLoaded(event, imageEl, image)
+
         };
 
         this.allImagesLoaded = function() {
+
             if (this.isAlign) {
                 this.align();
             }
+
+            cfg.onGridLoaded(this.$el);
+
         };
 
         this.align = function() {
@@ -217,6 +278,15 @@
 
     }
 
+    /*
+      ImagesGridModal constructor
+       *cfg             - Configuration object
+       *cfg.images      - Array of string or objects
+        cfg.nextOnClick - Show next image when click on modal image
+        cfg.onModalOpen       - Called when modal opened
+        cfg.onModalClose      - Called when modal closed
+        cfg.onModalImageClick - Called on modal image click
+    */
     function ImagesGridModal(cfg) {
 
         this.images = cfg.images;
@@ -227,14 +297,18 @@
         this.$document = $(document);
 
         this.open = function(imageIndex) {
+
             if (this.$modal && this.$modal.is(':visible')) {
                 return;
             }
+
             this.imageIndex = parseInt(imageIndex) || 0;
+
             this.render();
+
         };
 
-        this.close = function() {
+        this.close = function(event) {
 
             if (!this.$modal) {
                 return;
@@ -245,10 +319,14 @@
             }, {
                 duration: 100,
                 complete: function() {
+
                     this.$modal.remove();
                     this.$modal = null;
                     this.$indicator = null;
                     this.imageIndex = null;
+
+                    cfg.onModalClose();
+
                 }.bind(this)
             });
 
@@ -266,7 +344,16 @@
             this.keyUp = this.keyUp.bind(this);
             this.$document.on('keyup', this.keyUp);
 
-            this.$modal.animate({ opacity: 1 }, { duration: 100 });
+            var self = this;
+
+            this.$modal.animate({
+                opacity: 1
+            }, {
+                duration: 100,
+                complete: function() {
+                    cfg.onModalOpen(self.$modal);
+                }
+            });
 
         };
 
@@ -285,6 +372,9 @@
 
         this.renderInnerContainer = function() {
 
+            var image = this.getImage(this.imageIndex),
+                self = this;
+
             this.$modal.append(
                 $('<div>', {
                     class: 'modal-inner'
@@ -293,8 +383,12 @@
                         class: 'modal-image'
                     }).append(
                         $('<img>', {
-                            src: this.images[this.imageIndex],
-                            click: this.imageClick.bind(this)
+                            src: image.src,
+                            alt: image.alt,
+                            title: image.title,
+                            click: function(event) {
+                                self.imageClick(event, $(this), image);
+                            }
                         })
                     ),
                     $('<div>', {
@@ -368,20 +462,30 @@
 
         this.updateImage = function() {
 
-            var index = this.imageIndex;
+            var image = this.getImage(this.imageIndex);
 
-            this.$modal.find('.modal-image img').attr('src', this.images[index]);
+            this.$modal.find('.modal-image img').attr({
+                src: image.src,
+                alt: image.alt,
+                title: image.title
+            });
 
             if (this.$indicator) {
                 var indicatorList = this.$indicator.find('ul');
                 indicatorList.children().removeClass('selected');
-                indicatorList.children().eq(index).addClass('selected');
+                indicatorList.children().eq(this.imageIndex).addClass('selected');
             }
 
         };
 
-        this.imageClick = function(event) {
-            this.next();
+        this.imageClick = function(event, imageEl, image) {
+
+            if (cfg.nextOnClick) {
+                this.next();
+            }
+
+            cfg.onModalImageClick(event, imageEl, image);
+
         };
 
         this.indicatorClick = function(event) {
@@ -403,6 +507,15 @@
                         this.next();
                         break;
                 }
+            }
+        };
+
+        this.getImage = function(index) {
+            var image = this.images[index];
+            if ($.isPlainObject(image)) {
+                return image;
+            } else {
+                return { src: image, alt: '', title: '' }
             }
         };
 
