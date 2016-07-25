@@ -56,6 +56,8 @@ getViewAllText: function(imagesCount) {
 }
 ```
 
+## Events
+
 #####**`onGridRendered {Function}`**
 Function called when grid items added to the DOM
 ```javascript
