@@ -3,15 +3,12 @@
 ![Images grid](https://github.com/taras-d/images-grid/raw/master/demo.png "Images grid")
 
 ## Usage
-Add Images grid script and style after jQuery script tag
+Add Images grid plugin to your html page
 ```html
-<!-- jQuery -->
-<script src="https://code.jquery.com/jquery-1.12.3.min.js"></script>
-<!-- Images grid -->
 <script src="src/images-grid.js"></script>
 <link rel="stylesheet" href="src/images-grid.css">
 ```
-Create images grid on selected element(s)
+Create Images grid in selected element(s)
 ```javascript
 $('#imgs').imagesGrid({
   images: ['img1.png', ... , 'imgN.png']
@@ -56,7 +53,7 @@ getViewAllText: function(imagesCount) {
 }
 ```
 
-## Events
+#### Events:
 
 #####**`onGridRendered {Function}`**
 Function called when grid items added to the DOM
@@ -98,4 +95,18 @@ onModalClose: function() { }
 Function called on modal image click
 ```javascript
 onModalImageClick: function(event, $img, image) { }
+```
+
+## Methods
+
+#####**`.imagesGrid('modal.open', 0)`**
+Open modal window. Second parameter is image index
+```javascript
+$('#imgs').imagesGrid('modal.open', 0)
+```
+
+#####**`.imagesGrid('modal.close')`**
+Close modal window
+```javascript
+$('#imgs').imagesGrid('modal.close')
 ```
