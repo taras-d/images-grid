@@ -115,3 +115,10 @@ Close modal window
 ```javascript
 $('#imgs').imagesGrid('modal.close')
 ```
+
+## Default options
+Set default options for all images grid instances
+```javascript
+$.fn.imagesGrid.defaults.nextOnClick = false;
+$.fn.imagesGrid.defaults.cells = 6;
+```
