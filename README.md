@@ -18,12 +18,17 @@ $('#imgs').imagesGrid({
 ## Options
 
 #####**`images {Array}`**
-Array of images URLs. Array element can be string or object with _src_, _alt_ and _title_ attributes.
+Array of images URLs. Array element can be string or object
 ```javascript
 images: [
   'hello.png',
   'preview.jpg',
-  { src: 'car.png', alt: 'Car', title: 'Car' }
+  {
+    src: 'car.png',      // url
+    alt: 'Car',          // alternative text
+    title: 'Car',        // title
+    caption: 'Supercar'  // modal caption
+  }
 ]
 ```
 

@@ -337,6 +337,7 @@
         this.render = function() {
 
             this.renderModal();
+            this.renderCaption();
             this.renderCloseButton();
             this.renderInnerContainer();
             this.renderIndicatorContainer();
@@ -361,6 +362,15 @@
             this.$modal = $('<div>', {
                 class: 'imgs-grid-modal'
             }).appendTo('body');
+        };
+
+        this.renderCaption = function() {
+
+            this.$caption = $('<div>', {
+                class: 'modal-caption',
+                text: this.getImageCaption(this.imageIndex)
+            }).appendTo(this.$modal);
+
         };
 
         this.renderCloseButton = function() {
@@ -470,6 +480,9 @@
                 title: image.title
             });
 
+            this.$modal.find('.modal-caption').text(
+                this.getImageCaption(this.imageIndex) );
+
             if (this.$indicator) {
                 var indicatorList = this.$indicator.find('ul');
                 indicatorList.children().removeClass('selected');
@@ -517,6 +530,11 @@
             } else {
                 return { src: image, alt: '', title: '' }
             }
+        };
+
+        this.getImageCaption = function(imgIndex) {
+            var img = this.getImage(imgIndex);
+            return img.caption || '';
         };
 
     }

@@ -100,6 +100,11 @@
   -o-user-select: none;
   user-select: none;
 }
+.imgs-grid-modal .modal-caption {
+  padding: 30px 50px;
+  text-align: center;
+  color: white;
+}
 .imgs-grid-modal .modal-close {
   position: absolute;
   right: 10px;
