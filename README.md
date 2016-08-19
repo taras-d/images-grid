@@ -1,6 +1,8 @@
 # images-grid
 
-![Images grid](https://github.com/taras-d/images-grid/raw/master/demo.png "Images grid")
+[Demo](https://taras-d.github.io/images-grid)
+
+Images grid jQuery plugin
 
 ## Usage
 Add Images grid plugin to your html page

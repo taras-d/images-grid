@@ -78,10 +78,8 @@
         this.$gridItems = [];
 
         this.render = function() {
-
             this.setGridClass();
             this.renderGridItems();
-
             this.modal = new ImagesGridModal({
                 images: cfg.images,
                 nextOnClick: cfg.nextOnClick,
@@ -89,70 +87,53 @@
                 onModalClose: cfg.onModalClose,
                 onModalImageClick: cfg.onModalImageClick
             });
-
             this.$window.on('resize', this.resize.bind(this));
-
         };
 
         this.setGridClass = function() {
-
             this.$el.removeClass(function(index, classNames) {
                 if (/(imgs-grid-\d)/.test(classNames)) {
                     return RegExp.$1;
                 }
             });
-
             var cellsCount = (this.images.length > this.maxGridCells)?
                 this.maxGridCells: this.images.length;
-
             this.$el.addClass('imgs-grid imgs-grid-' + cellsCount);
-
         };
 
         this.renderGridItems = function() {
-
             if (!this.images) {
                 return;
             }
-
             this.$el.empty();
             this.$gridItems = [];
-
             for (var i = 0; i < this.images.length; ++i) {
                 if (i == this.maxGridCells) {
                     break;
                 }
                 this.renderGridItem(this.images[i], i);
             }
-
             if (this.images.length > this.maxGridCells) {
                 this.renderViewAll();
             }
-
             cfg.onGridRendered(this.$el);
-
         };
 
         this.renderGridItem = function(image, index) {
-
             var src = image,
                 alt = '',
                 title = '';
-
             if ($.isPlainObject(image)) {
                 src = image.src;
                 alt = image.alt || '';
                 title = image.title || '';
             }
-
             var item = $('<div>', {
                 class: 'imgs-grid-image',
                 click: this.imageClick.bind(this),
                 data: { index: index }
             });
-
             var self = this;
-
             item.append(
                 $('<div>', {
                     class: 'image-wrap'
@@ -167,17 +148,12 @@
                     })
                 )
             );
-
             this.$gridItems.push(item);
-
             this.$el.append(item);
-
             cfg.onGridItemRendered(item, image);
-
         };
 
         this.renderViewAll = function() {
-
             this.$el.find('.imgs-grid-image:last .image-wrap').append(
                 $('<div>', {
                     class: 'view-all'
@@ -191,7 +167,6 @@
                     })
                 )
             );
-
         };
 
         this.resize = function(event) {
@@ -206,32 +181,23 @@
         };
 
         this.imageLoaded = function(event, imageEl, image) {
-
             ++this.imageLoadCount;
-
             if (this.imageLoadCount == this.$gridItems.length) {
                 this.imageLoadCount = 0;
                 this.allImagesLoaded()
             }
-
             cfg.onGridImageLoaded(event, imageEl, image)
-
         };
 
         this.allImagesLoaded = function() {
-
             if (this.isAlign) {
                 this.align();
             }
-
             cfg.onGridLoaded(this.$el);
-
         };
 
         this.align = function() {
-
             var len = this.$gridItems.length;
-
             switch (len) {
                 case 2:
                 case 3:
@@ -247,17 +213,13 @@
                     this.alignItems(this.$gridItems.slice(3));
                     break;
             }
-
         };
 
         this.alignItems = function(items) {
-
             var height = items.map(function(item) {
                 return item.find('img').height();
             });
-
             var itemHeight = Math.min.apply(null, height);
-
             $(items).each(function() {
 
                 var item = $(this),
@@ -273,7 +235,6 @@
                 }
 
             });
-
         };
 
     }
@@ -297,23 +258,17 @@
         this.$document = $(document);
 
         this.open = function(imageIndex) {
-
             if (this.$modal && this.$modal.is(':visible')) {
                 return;
             }
-
             this.imageIndex = parseInt(imageIndex) || 0;
-
             this.render();
-
         };
 
         this.close = function(event) {
-
             if (!this.$modal) {
                 return;
             }
-
             this.$modal.animate({
                 opacity: 0
             }, {
@@ -329,24 +284,18 @@
 
                 }.bind(this)
             });
-
             this.$document.off('keyup', this.keyUp);
-
         };
 
         this.render = function() {
-
             this.renderModal();
             this.renderCaption();
             this.renderCloseButton();
             this.renderInnerContainer();
             this.renderIndicatorContainer();
-
             this.keyUp = this.keyUp.bind(this);
             this.$document.on('keyup', this.keyUp);
-
             var self = this;
-
             this.$modal.animate({
                 opacity: 1
             }, {
@@ -355,7 +304,6 @@
                     cfg.onModalOpen(self.$modal);
                 }
             });
-
         };
 
         this.renderModal = function() {
@@ -365,12 +313,10 @@
         };
 
         this.renderCaption = function() {
-
             this.$caption = $('<div>', {
                 class: 'modal-caption',
                 text: this.getImageCaption(this.imageIndex)
             }).appendTo(this.$modal);
-
         };
 
         this.renderCloseButton = function() {
@@ -381,10 +327,8 @@
         };
 
         this.renderInnerContainer = function() {
-
             var image = this.getImage(this.imageIndex),
                 self = this;
-
             this.$modal.append(
                 $('<div>', {
                     class: 'modal-inner'
@@ -419,25 +363,19 @@
                     )
                 )
             );
-
             if (this.images.length <= 1) {
                 this.$modal.find('.modal-control').hide();
             }
-
         };
 
         this.renderIndicatorContainer = function() {
-
             if (this.images.length == 1) {
                 return;
             }
-
             this.$indicator = $('<div>', {
                 class: 'modal-indicator'
             });
-
             var list = $('<ul>');
-
             for (var i = 0; i < this.images.length; ++i) {
                 list.append($('<li>', {
                     class: this.imageIndex == i? 'selected': '',
@@ -445,11 +383,8 @@
                     data: { index: i }
                 }));
             }
-
             this.$indicator.append(list);
-
             this.$modal.append(this.$indicator);
-
         };
 
         this.prev = function() {
@@ -471,34 +406,26 @@
         };
 
         this.updateImage = function() {
-
             var image = this.getImage(this.imageIndex);
-
             this.$modal.find('.modal-image img').attr({
                 src: image.src,
                 alt: image.alt,
                 title: image.title
             });
-
             this.$modal.find('.modal-caption').text(
                 this.getImageCaption(this.imageIndex) );
-
             if (this.$indicator) {
                 var indicatorList = this.$indicator.find('ul');
                 indicatorList.children().removeClass('selected');
                 indicatorList.children().eq(this.imageIndex).addClass('selected');
             }
-
         };
 
         this.imageClick = function(event, imageEl, image) {
-
             if (cfg.nextOnClick) {
                 this.next();
             }
-
             cfg.onModalImageClick(event, imageEl, image);
-
         };
 
         this.indicatorClick = function(event) {

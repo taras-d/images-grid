@@ -18,43 +18,33 @@
             }
             p {
                 text-align: center;
-                font-weight: bold;
+                margin: 30px;
+                line-height: 1.5;
             }
         </style>
 
     </head>
     <body>
 
-        <p>More than five images</p>
-        <div id="gallery1"></div>
-
-        <p>Diff-size images</p>
-        <div id="gallery2"></div>
+        <p>
+            Images grid jQuery plugin<br>
+            More info on <a href="https://github.com/taras-d/images-grid#images-grid">GitHub</a>
+        </p>
+        <div id="gallery"></div>
 
         <script>
-
-            $('#gallery1').imagesGrid({
+            $('#gallery').imagesGrid({
                 images: [
                     'imgs/1.jpg',
-                    { src: 'imgs/2.jpg', alt: 'Second image', title: 'Second image' },
+                    { src: 'imgs/2.jpg', alt: 'Nature', title: 'Nature' },
                     'imgs/3.jpg',
-                    { src: 'imgs/4.jpg', caption: 'Beautiful forest' },
+                    { src: 'imgs/4.jpg', caption: 'The long way' },
                     'imgs/5.jpg',
-                    'imgs/6.jpg'
-                ]
-            });
-
-            $('#gallery2').imagesGrid({
-                images: [
-                    'imgs/diff-size/1.jpg',
-                    'imgs/diff-size/2.jpg',
-                    'imgs/diff-size/3.jpg',
-                    'imgs/diff-size/4.jpg',
-                    'imgs/diff-size/5.jpg'
+                    'imgs/6.jpg',
+                    'imgs/7.jpg'
                 ],
                 align: true
             });
-
         </script>
 
     </body>
