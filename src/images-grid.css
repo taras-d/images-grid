@@ -186,6 +186,12 @@
 .imgs-grid-modal .modal-inner .modal-image img:hover {
   cursor: pointer;
 }
+.imgs-grid-modal .modal-inner .modal-loader {
+  display: inline-block;
+  vertical-align: middle;
+  color: silver;
+  font-size: 14px;
+}
 @media (max-width: 800px) {
   .imgs-grid-modal .modal-inner .modal-control {
     width: 40px;

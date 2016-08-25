@@ -80,13 +80,7 @@
         this.render = function() {
             this.setGridClass();
             this.renderGridItems();
-            this.modal = new ImagesGridModal({
-                images: cfg.images,
-                nextOnClick: cfg.nextOnClick,
-                onModalOpen: cfg.onModalOpen,
-                onModalClose: cfg.onModalClose,
-                onModalImageClick: cfg.onModalImageClick
-            });
+            this.initModal();
             this.$window.on('resize', this.resize.bind(this));
         };
 
@@ -99,6 +93,16 @@
             var cellsCount = (this.images.length > this.maxGridCells)?
                 this.maxGridCells: this.images.length;
             this.$el.addClass('imgs-grid imgs-grid-' + cellsCount);
+        };
+
+        this.initModal = function() {
+            this.modal = new ImagesGridModal({
+                images: cfg.images,
+                nextOnClick: cfg.nextOnClick,
+                onModalOpen: cfg.onModalOpen,
+                onModalClose: cfg.onModalClose,
+                onModalImageClick: cfg.onModalImageClick
+            });
         };
 
         this.renderGridItems = function() {
@@ -274,14 +278,11 @@
             }, {
                 duration: 100,
                 complete: function() {
-
                     this.$modal.remove();
                     this.$modal = null;
                     this.$indicator = null;
                     this.imageIndex = null;
-
                     cfg.onModalClose();
-
                 }.bind(this)
             });
             this.$document.off('keyup', this.keyUp);
@@ -293,16 +294,14 @@
             this.renderCloseButton();
             this.renderInnerContainer();
             this.renderIndicatorContainer();
-            this.keyUp = this.keyUp.bind(this);
             this.$document.on('keyup', this.keyUp);
-            var self = this;
             this.$modal.animate({
                 opacity: 1
             }, {
                 duration: 100,
                 complete: function() {
-                    cfg.onModalOpen(self.$modal);
-                }
+                    cfg.onModalOpen(this.$modal);
+                }.bind(this)
             });
         };
 
@@ -327,8 +326,7 @@
         };
 
         this.renderInnerContainer = function() {
-            var image = this.getImage(this.imageIndex),
-                self = this;
+            var image = this.getImage(this.imageIndex);
             this.$modal.append(
                 $('<div>', {
                     class: 'modal-inner'
@@ -340,9 +338,14 @@
                             src: image.src,
                             alt: image.alt,
                             title: image.title,
+                            load: this.imageLoaded.bind(this),
                             click: function(event) {
-                                self.imageClick(event, $(this), image);
-                            }
+                                this.imageClick(event, $(this), image);
+                            }.bind(this)
+                        }),
+                        $('<div>', {
+                            class: 'modal-loader',
+                            text: 'loading...'
                         })
                     ),
                     $('<div>', {
@@ -419,6 +422,7 @@
                 indicatorList.children().removeClass('selected');
                 indicatorList.children().eq(this.imageIndex).addClass('selected');
             }
+            this.showLoader();
         };
 
         this.imageClick = function(event, imageEl, image) {
@@ -426,6 +430,10 @@
                 this.next();
             }
             cfg.onModalImageClick(event, imageEl, image);
+        };
+
+        this.imageLoaded = function() {
+            this.hideLoader();
         };
 
         this.indicatorClick = function(event) {
@@ -448,7 +456,7 @@
                         break;
                 }
             }
-        };
+        }.bind(this);
 
         this.getImage = function(index) {
             var image = this.images[index];
@@ -462,6 +470,20 @@
         this.getImageCaption = function(imgIndex) {
             var img = this.getImage(imgIndex);
             return img.caption || '';
+        };
+
+        this.showLoader = function() {
+            if (this.$modal) {
+                this.$modal.find('.modal-image img').hide();
+                this.$modal.find('.modal-loader').show();
+            }
+        };
+
+        this.hideLoader = function() {
+            if (this.$modal) {
+                this.$modal.find('.modal-image img').show();
+                this.$modal.find('.modal-loader').hide();
+            }
         };
 
     }
