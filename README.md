@@ -5,12 +5,12 @@ Images grid jQuery plugin
 [Demo](https://taras-d.github.io/images-grid)
 
 ## Usage
-Add Images grid plugin to your html page
+Add Images grid plugin to html page
 ```html
 <script src="src/images-grid.js"></script>
 <link rel="stylesheet" href="src/images-grid.css">
 ```
-Create Images grid in selected element(s)
+Init Images grid
 ```javascript
 $('#imgs').imagesGrid({
   images: ['img1.png', ... , 'imgN.png']
