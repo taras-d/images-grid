@@ -11,10 +11,13 @@ Add Images grid plugin to html page
 <link rel="stylesheet" href="src/images-grid.css">
 ```
 Init Images grid
-```javascript
-$('#imgs').imagesGrid({
-  images: ['img1.png', ... , 'imgN.png']
-});
+```html
+<div id="imgs"></div>
+<script>
+  $('#imgs').imagesGrid({
+    images: ['img1.png', ... , 'imgN.png']
+  });
+</script>
 ```
 
 ## Options
@@ -35,7 +38,7 @@ images: [
 ```
 
 #####**`cells {Number}`**
-Max grid cells. Values from 1 to 6 (default: 5)
+Number of cells in the grid. Min 1, max 6. (default: 5)
 ```javascript
 cells: 5
 ```
@@ -119,8 +122,8 @@ $('#imgs').imagesGrid('modal.close')
 ```
 
 ## Default options
-Set default options for all images grid instances
+Default options can be overridden
 ```javascript
-$.fn.imagesGrid.defaults.nextOnClick = false;
+// Override number of cells
 $.fn.imagesGrid.defaults.cells = 6;
 ```
