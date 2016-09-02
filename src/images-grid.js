@@ -84,18 +84,18 @@
     }
 
     ImagesGrid.prototype.init = function()  {
+
         this.applyGridClass();
         this.renderGridItems();
-        this.initEventsListeners();
         this.initModal();
-    };
 
-    ImagesGrid.prototype.initEventsListeners = function() {
         this.$window.on('resize', this.onWinResize.bind(this));
     };
 
     ImagesGrid.prototype.initModal = function() {
+
         var opts = this.opts;
+
         this.modal = new ImagesGridModal({
             images: opts.images,
             nextOnClick: opts.nextOnClick,
@@ -153,8 +153,7 @@
         var src = image,
             alt = '',
             title = '',
-            opts = this.opts,
-            self = this;
+            opts = this.opts;
 
         if ($.isPlainObject(image)) {
             src = image.src;
@@ -245,8 +244,10 @@
     };
 
     ImagesGrid.prototype.align = function() {
-        var len = this.$gridItems.length;
-        switch (len) {
+
+        var itemsLen = this.$gridItems.length;
+
+        switch (itemsLen) {
             case 2:
             case 3:
                 this.alignItems(this.$gridItems);
@@ -290,247 +291,294 @@
 
     /*
       ImagesGridModal constructor
-       *cfg             - Configuration object
-       *cfg.images      - Array of string or objects
-        cfg.nextOnClick - Show next image when click on modal image
-        cfg.onModalOpen       - Called when modal opened
-        cfg.onModalClose      - Called when modal closed
-        cfg.onModalImageClick - Called on modal image click
+        opts             - Options
+        opts.images      - Array of string or objects
+        opts.nextOnClick - Show next image when click on modal image
+        opts.onModalOpen       - Called when modal opened
+        opts.onModalClose      - Called when modal closed
+        opts.onModalImageClick - Called on modal image click
     */
-    function ImagesGridModal(cfg) {
+    function ImagesGridModal(opts) {
 
-        this.images = cfg.images;
+        this.opts = opts || {};
+
         this.imageIndex = null;
 
+        this.$document = $(document);
         this.$modal = null;
         this.$indicator = null;
-        this.$document = $(document);
+    }
 
-        this.open = function(imageIndex) {
-            if (this.$modal && this.$modal.is(':visible')) {
-                return;
-            }
-            this.imageIndex = parseInt(imageIndex) || 0;
-            this.render();
-        };
+    ImagesGridModal.prototype.open = function(imageIndex) {
 
-        this.close = function(event) {
-            if (!this.$modal) {
-                return;
-            }
-            this.$modal.animate({
-                opacity: 0
-            }, {
-                duration: 100,
-                complete: function() {
-                    this.$modal.remove();
-                    this.$modal = null;
-                    this.$indicator = null;
-                    this.imageIndex = null;
-                    cfg.onModalClose();
-                }.bind(this)
-            });
-            this.$document.off('keyup', this.keyUp);
-        };
+        if (this.$modal && this.$modal.is(':visible')) {
+            return;
+        }
 
-        this.render = function() {
-            this.renderModal();
-            this.renderCaption();
-            this.renderCloseButton();
-            this.renderInnerContainer();
-            this.renderIndicatorContainer();
-            this.$document.on('keyup', this.keyUp);
-            this.$modal.animate({
-                opacity: 1
-            }, {
-                duration: 100,
-                complete: function() {
-                    cfg.onModalOpen(this.$modal);
-                }.bind(this)
-            });
-        };
+        this.imageIndex = parseInt(imageIndex) || 0;
+        this.render();
+    };
 
-        this.renderModal = function() {
-            this.$modal = $('<div>', {
-                class: 'imgs-grid-modal'
-            }).appendTo('body');
-        };
+    ImagesGridModal.prototype.close = function(event) {
 
-        this.renderCaption = function() {
-            this.$caption = $('<div>', {
-                class: 'modal-caption',
-                text: this.getImageCaption(this.imageIndex)
-            }).appendTo(this.$modal);
-        };
+        if (!this.$modal) {
+            return;
+        }
 
-        this.renderCloseButton = function() {
-            this.$modal.append($('<div>', {
-                class: 'modal-close',
-                click: this.close.bind(this)
-            }));
-        };
+        var opts = this.opts;
 
-        this.renderInnerContainer = function() {
-            var image = this.getImage(this.imageIndex);
-            this.$modal.append(
+        this.$modal.animate({
+            opacity: 0
+        }, {
+            duration: 100,
+            complete: function() {
+                this.$modal.remove();
+                this.$modal = null;
+                this.$indicator = null;
+                this.imageIndex = null;
+                opts.onModalClose();
+            }.bind(this)
+        });
+
+        this.$document.off('keyup', this.onKeyUp);
+    };
+
+    ImagesGridModal.prototype.render = function() {
+
+        var opts = this.opts;
+
+        this.renderModal();
+        this.renderCaption();
+        this.renderCloseButton();
+        this.renderInnerContainer();
+        this.renderIndicatorContainer();
+
+        this.onKeyUp = this.onKeyUp.bind(this);
+        this.$document.on('keyup', this.onKeyUp);
+
+        this.$modal.animate({
+            opacity: 1
+        }, {
+            duration: 100,
+            complete: function() {
+                opts.onModalOpen(this.$modal);
+            }.bind(this)
+        });
+    };
+
+    ImagesGridModal.prototype.renderModal = function() {
+        this.$modal = $('<div>', {
+            class: 'imgs-grid-modal'
+        }).appendTo('body');
+    };
+
+    ImagesGridModal.prototype.renderCaption = function() {
+        this.$caption = $('<div>', {
+            class: 'modal-caption',
+            text: this.getImageCaption(this.imageIndex)
+        }).appendTo(this.$modal);
+    };
+
+    ImagesGridModal.prototype.renderCloseButton = function() {
+        this.$modal.append($('<div>', {
+            class: 'modal-close',
+            click: this.close.bind(this)
+        }));
+    };
+
+    ImagesGridModal.prototype.renderInnerContainer = function() {
+
+        var opts = this.opts,
+            image = this.getImage(this.imageIndex);
+
+        this.$modal.append(
+            $('<div>', {
+                class: 'modal-inner'
+            }).append(
                 $('<div>', {
-                    class: 'modal-inner'
+                    class: 'modal-image'
+                }).append(
+                    $('<img>', {
+                        src: image.src,
+                        alt: image.alt,
+                        title: image.title,
+                        load: this.onImageLoaded.bind(this),
+                        click: function(event) {
+                            this.onImageClick(event, $(this), image);
+                        }.bind(this)
+                    }),
+                    $('<div>', {
+                        class: 'modal-loader',
+                        text: 'loading...'
+                    })
+                ),
+                $('<div>', {
+                    class: 'modal-control left',
+                    click: this.prev.bind(this)
                 }).append(
                     $('<div>', {
-                        class: 'modal-image'
-                    }).append(
-                        $('<img>', {
-                            src: image.src,
-                            alt: image.alt,
-                            title: image.title,
-                            load: this.imageLoaded.bind(this),
-                            click: function(event) {
-                                this.imageClick(event, $(this), image);
-                            }.bind(this)
-                        }),
-                        $('<div>', {
-                            class: 'modal-loader',
-                            text: 'loading...'
-                        })
-                    ),
+                        class: 'arrow left'
+                    })
+                ),
+                $('<div>', {
+                    class: 'modal-control right',
+                    click: this.next.bind(this)
+                }).append(
                     $('<div>', {
-                        class: 'modal-control left',
-                        click: this.prev.bind(this)
-                    }).append(
-                        $('<div>', {
-                            class: 'arrow left'
-                        })
-                    ),
-                    $('<div>', {
-                        class: 'modal-control right',
-                        click: this.next.bind(this)
-                    }).append(
-                        $('<div>', {
-                            class: 'arrow right'
-                        })
-                    )
+                        class: 'arrow right'
+                    })
                 )
-            );
-            if (this.images.length <= 1) {
-                this.$modal.find('.modal-control').hide();
-            }
-        };
+            )
+        );
 
-        this.renderIndicatorContainer = function() {
-            if (this.images.length == 1) {
-                return;
-            }
-            this.$indicator = $('<div>', {
-                class: 'modal-indicator'
-            });
-            var list = $('<ul>');
-            for (var i = 0; i < this.images.length; ++i) {
-                list.append($('<li>', {
-                    class: this.imageIndex == i? 'selected': '',
-                    click: this.indicatorClick.bind(this),
-                    data: { index: i }
-                }));
-            }
-            this.$indicator.append(list);
-            this.$modal.append(this.$indicator);
-        };
+        if (opts.images.length <= 1) {
+            this.$modal.find('.modal-control').hide();
+        }
+    };
 
-        this.prev = function() {
-            if (this.imageIndex > 0) {
-                --this.imageIndex;
-            } else {
-                this.imageIndex = this.images.length - 1;
-            }
-            this.updateImage();
-        };
+    ImagesGridModal.prototype.renderIndicatorContainer = function() {
 
-        this.next = function() {
-            if (this.imageIndex < this.images.length - 1) {
-                ++this.imageIndex;
-            } else {
-                this.imageIndex = 0;
-            }
-            this.updateImage();
-        };
+        var opts = this.opts,
+            imgsLen = opts.images.length;
 
-        this.updateImage = function() {
-            var image = this.getImage(this.imageIndex);
-            this.$modal.find('.modal-image img').attr({
-                src: image.src,
-                alt: image.alt,
-                title: image.title
-            });
-            this.$modal.find('.modal-caption').text(
-                this.getImageCaption(this.imageIndex) );
-            if (this.$indicator) {
-                var indicatorList = this.$indicator.find('ul');
-                indicatorList.children().removeClass('selected');
-                indicatorList.children().eq(this.imageIndex).addClass('selected');
-            }
-            this.showLoader();
-        };
+        if (imgsLen == 1) {
+            return;
+        }
 
-        this.imageClick = function(event, imageEl, image) {
-            if (cfg.nextOnClick) {
+        this.$indicator = $('<div>', {
+            class: 'modal-indicator'
+        });
+
+        var list = $('<ul>'), i;
+        for (i = 0; i < imgsLen; ++i) {
+            list.append($('<li>', {
+                class: this.imageIndex == i? 'selected': '',
+                click: this.indicatorClick.bind(this),
+                data: { index: i }
+            }));
+        }
+
+        this.$indicator.append(list);
+        this.$modal.append(this.$indicator);
+    };
+
+    ImagesGridModal.prototype.prev = function() {
+
+        var imgsLen = this.opts.images.length;
+
+        if (this.imageIndex > 0) {
+            --this.imageIndex;
+        } else {
+            this.imageIndex = imgsLen - 1;
+        }
+
+        this.updateImage();
+    };
+
+    ImagesGridModal.prototype.next = function() {
+
+        var imgsLen = this.opts.images.length;
+
+        if (this.imageIndex < imgsLen - 1) {
+            ++this.imageIndex;
+        } else {
+            this.imageIndex = 0;
+        }
+
+        this.updateImage();
+    };
+
+    ImagesGridModal.prototype.updateImage = function() {
+
+        var image = this.getImage(this.imageIndex);
+
+        this.$modal.find('.modal-image img').attr({
+            src: image.src,
+            alt: image.alt,
+            title: image.title
+        });
+
+        this.$modal.find('.modal-caption').text(
+            this.getImageCaption(this.imageIndex) );
+
+        if (this.$indicator) {
+            var indicatorList = this.$indicator.find('ul');
+            indicatorList.children().removeClass('selected');
+            indicatorList.children().eq(this.imageIndex).addClass('selected');
+        }
+
+        this.showLoader();
+    };
+
+    ImagesGridModal.prototype.onImageClick = function(event, imageEl, image) {
+
+        var opts = this.opts;
+
+        if (opts.nextOnClick) {
+            this.next();
+        }
+
+        opts.onModalImageClick(event, imageEl, image);
+    };
+
+    ImagesGridModal.prototype.onImageLoaded = function() {
+        this.hideLoader();
+    };
+
+    ImagesGridModal.prototype.indicatorClick = function(event) {
+        var index = $(event.target).data('index');
+        this.imageIndex = index;
+        this.updateImage();
+    };
+
+    ImagesGridModal.prototype.onKeyUp = function(event) {
+
+        if (!this.$modal) {
+            return;
+        }
+
+        switch (event.keyCode) {
+            case 27: // Esc
+                this.close();
+                break;
+            case 37: // Left arrow
+                this.prev();
+                break;
+            case 39: // Right arrow
                 this.next();
-            }
-            cfg.onModalImageClick(event, imageEl, image);
-        };
+                break;
+        }
+    };
 
-        this.imageLoaded = function() {
-            this.hideLoader();
-        };
+    ImagesGridModal.prototype.getImage = function(index) {
 
-        this.indicatorClick = function(event) {
-            var index = $(event.target).data('index');
-            this.imageIndex = index;
-            this.updateImage();
-        };
+        var opts = this.opts,
+            image = opts.images[index];
 
-        this.keyUp = function(event) {
-            if (this.$modal) {
-                switch (event.keyCode) {
-                    case 27: // Esc
-                        this.close();
-                        break;
-                    case 37: // Left arrow
-                        this.prev();
-                        break;
-                    case 39: // Right arrow
-                        this.next();
-                        break;
-                }
-            }
-        }.bind(this);
+        if ($.isPlainObject(image)) {
+            return image;
+        } else {
+            return { src: image, alt: '', title: '' }
+        }
+    };
 
-        this.getImage = function(index) {
-            var image = this.images[index];
-            if ($.isPlainObject(image)) {
-                return image;
-            } else {
-                return { src: image, alt: '', title: '' }
-            }
-        };
+    ImagesGridModal.prototype.getImageCaption = function(imgIndex) {
+        var img = this.getImage(imgIndex);
+        return img.caption || '';
+    };
 
-        this.getImageCaption = function(imgIndex) {
-            var img = this.getImage(imgIndex);
-            return img.caption || '';
-        };
+    ImagesGridModal.prototype.showLoader = function() {
+        if (this.$modal) {
+            this.$modal.find('.modal-image img').hide();
+            this.$modal.find('.modal-loader').show();
+        }
+    };
 
-        this.showLoader = function() {
-            if (this.$modal) {
-                this.$modal.find('.modal-image img').hide();
-                this.$modal.find('.modal-loader').show();
-            }
-        };
-
-        this.hideLoader = function() {
-            if (this.$modal) {
-                this.$modal.find('.modal-image img').show();
-                this.$modal.find('.modal-loader').hide();
-            }
-        };
-
-    }
+    ImagesGridModal.prototype.hideLoader = function() {
+        if (this.$modal) {
+            this.$modal.find('.modal-image img').show();
+            this.$modal.find('.modal-loader').hide();
+        }
+    };
 
 })(jQuery);
