@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+    <head>
+
+        <title>Images grid test</title>
+
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <script src="https://code.jquery.com/jquery-1.12.3.min.js"></script>
+
+        <script src="src/images-grid.js"></script>
+        <link rel="stylesheet" href="src/images-grid.css">
+
+        <style>
+            body {
+                font-family: sans-serif;
+            }
+            p {
+                text-align: center;
+                margin: 10px;
+                font-weight: bold;
+                font-size: 12px;
+            }
+        </style>
+
+    </head>
+    <body>
+
+        <p>1 image</p>
+        <div id="gallery-1"></div>
+
+        <p>2 images</p>
+        <div id="gallery-2"></div>
+
+        <p>3 images</p>
+        <div id="gallery-3"></div>
+
+        <p>4 images</p>
+        <div id="gallery-4"></div>
+
+        <p>5 images</p>
+        <div id="gallery-5"></div>
+
+        <p>6 images</p>
+        <div id="gallery-6"></div>
+
+        <p>More than 6 images</p>
+        <div id="gallery-7"></div>
+
+        <script>
+
+            // Change default cells count from 5 to 6
+            $.fn.imagesGrid.defaults.cells = 6;
+
+            var images = [
+                'imgs/1.jpg',
+                'imgs/2.jpg',
+                'imgs/3.jpg',
+                'imgs/4.jpg',
+                'imgs/5.jpg',
+                'imgs/6.jpg',
+                'imgs/7.jpg',
+            ];
+
+            for (var i = 0; i < images.length; ++i) {
+                $('#gallery-' + (i + 1)).imagesGrid({
+                    images: images.slice(0, (i + 1)),
+                    align: true
+                });
+            }
+
+        </script>
+
+    </body>
+</html>
