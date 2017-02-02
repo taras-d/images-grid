@@ -175,9 +175,11 @@
                     src: src,
                     alt: alt,
                     title: title,
-                    load: function(event) {
-                        this.onImageLoaded(event, $(this), image);
-                    }.bind(this)
+                    on: {
+                        load: function(event) {
+                            this.onImageLoaded(event, $(this), image);
+                        }.bind(this)
+                    }
                 })
             )
         );
@@ -402,10 +404,12 @@
                         src: image.src,
                         alt: image.alt,
                         title: image.title,
-                        load: this.onImageLoaded.bind(this),
-                        click: function(event) {
-                            this.onImageClick(event, $(this), image);
-                        }.bind(this)
+                        on: {
+                            load: this.onImageLoaded.bind(this),
+                            click: function(event) {
+                                this.onImageClick(event, $(this), image);
+                            }.bind(this)
+                        }
                     }),
                     $('<div>', {
                         class: 'modal-loader',
