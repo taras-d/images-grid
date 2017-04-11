@@ -39,6 +39,7 @@
         cells: 5,
         align: false,
         nextOnClick: true,
+        showViewAll: 'more',
         getViewAllText: function(imagesCount) {
             return 'View all ' + imagesCount + ' images';
         },
@@ -141,7 +142,9 @@
             this.renderGridItem(imgs[i], i);
         }
 
-        if (imgsLen > opts.cells) {
+        if (opts.showViewAll === 'always' || 
+            (opts.showViewAll === 'more' && imgsLen > opts.cells)
+        ) {
             this.renderViewAll();
         }
 
