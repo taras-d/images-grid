@@ -1,7 +1,9 @@
 
 (function($) {
 
-    // ===== Plugin =====
+    /**
+     * Plugin
+     */
 
     $.fn.imagesGrid = function(options) {
 
@@ -9,21 +11,31 @@
 
         return this.each(function() {
 
+            // If options is plain object - destroy previous instance and create new
             if ($.isPlainObject(options)) {
-                // Create ImagesGrid
+                
+                if (this._imgGrid instanceof ImagesGrid) {
+                    this._imgGrid.destroy();
+                }
+
                 var opts = $.extend({}, $.fn.imagesGrid.defaults, options);
                 opts.element = $(this);
                 this._imgGrid = new ImagesGrid(opts);
+
                 return;
             }
 
-            if (this._imgGrid instanceof ImagesGrid) {
+            // If options is string - execute method
+            if (typeof options === 'string' && this._imgGrid instanceof ImagesGrid) {
                 switch (options) {
                     case 'modal.open':
                         this._imgGrid.modal.open(args[1]);
                         break;
                     case 'modal.close':
                         this._imgGrid.modal.close();
+                        break;
+                    case 'destroy':
+                        this._imgGrid.destroy();
                         break;
                 }
             }
@@ -32,7 +44,9 @@
 
     };
 
-    // ===== Plugin default options =====
+    /**
+     * Plugin default options
+     */
 
     $.fn.imagesGrid.defaults = {
         images: [],
@@ -52,21 +66,24 @@
         onModalImageClick: $.noop
     };
 
-    // ===== ImagesGrid =====
+    /**
+     * ImagesGrid
+     *   opts                    {object}   Options 
+     *   opts.element            {jQuery}   Element where to render images grid
+     *   opts.images             {array}    Array of images. Array item can be string or object { src, alt, title, caption }
+     *   opts.align              {boolean}  Align images with different height
+     *   opts.cells              {number}   Maximum number of cells (from 1 to 6)
+     *   opts.showViewAll        {string}   Show view all text:
+     *                                        'more'   - show if number of images greater than number of cells
+     *                                        'always' - always show
+     *                                        false    - never show
+     *   opts.getViewAllText     {function} Callback function returns text for "view all images" link
+     *   opts.onGridRendered     {function} Callback function fired when grid items added to the DOM
+     *   opts.onGridItemRendered {function} Callback function fired when grid item added to the DOM
+     *   opts.onGridLoaded       {function} Callback function fired when grid images loaded
+     *   opts.onGridImageLoaded  {function} Callback function fired when grid image loaded
+     */
 
-    /*
-      ImagesGrid constructor
-        opts         - Options
-        opts.element - jQuery element
-        opts.images  - Array of images urls of images option objects
-        opts.align   - Aling diff-size images
-        opts.cells   - Max grid cells (1-6)
-        opts.getViewAllText     - Returns text for "view all images" link,
-        opts.onGridRendered     - Called when grid items added to the DOM
-        opts.onGridItemRendered - Called when grid item added to the DOM
-        opts.onGridLoaded       - Called when grid images loaded
-        opts.onGridImageLoaded  - Called when grid image loaded
-    */
     function ImagesGrid(opts) {
 
         this.opts = opts || {};
@@ -81,6 +98,9 @@
         var cells = this.opts.cells;
         this.opts.cells = (cells < 1)? 1: (cells > 6)? 6: cells;
 
+        this.onWindowResize = this.onWindowResize.bind(this);
+        this.onImageClick = this.onImageClick.bind(this);
+
         this.init();
     }
 
@@ -90,8 +110,8 @@
         this.renderGridItems();
         this.initModal();
 
-        this.$window.on('resize', this.onWinResize.bind(this));
-    };
+        this.$window.on('resize', this.onWindowResize);
+    }
 
     ImagesGrid.prototype.initModal = function() {
 
@@ -104,13 +124,15 @@
             onModalClose: opts.onModalClose,
             onModalImageClick: opts.onModalImageClick
         });
-    };
+    }
 
     ImagesGrid.prototype.applyGridClass = function() {
 
+        // TODO: Move it to the destroy method
         // Remove previous grid class
         this.$element.removeClass(function(index, classNames) {
             if (/(imgs-grid-\d)/.test(classNames)) {
+                // TODO: Don't use RegExp.$1..
                 return RegExp.$1;
             }
         });
@@ -120,7 +142,7 @@
             cellsCount = (imgsLen < opts.cells)? imgsLen: opts.cells;
 
         this.$element.addClass('imgs-grid imgs-grid-' + cellsCount);
-    };
+    }
 
     ImagesGrid.prototype.renderGridItems = function() {
 
@@ -136,7 +158,7 @@
         this.$gridItems = [];
 
         for (var i = 0; i < imgsLen; ++i) {
-            if (i == opts.cells) {
+            if (i === opts.cells) {
                 break;
             }
             this.renderGridItem(imgs[i], i);
@@ -149,14 +171,15 @@
         }
 
         opts.onGridRendered(this.$element);
-    };
+    }
 
     ImagesGrid.prototype.renderGridItem = function(image, index) {
 
         var src = image,
             alt = '',
             title = '',
-            opts = this.opts;
+            opts = this.opts,
+            _this = this;
 
         if ($.isPlainObject(image)) {
             src = image.src;
@@ -166,7 +189,7 @@
 
         var item = $('<div>', {
             class: 'imgs-grid-image',
-            click: this.onImageClick.bind(this),
+            click: this.onImageClick,
             data: { index: index }
         });
 
@@ -180,8 +203,8 @@
                     title: title,
                     on: {
                         load: function(event) {
-                            this.onImageLoaded(event, $(this), image);
-                        }.bind(this)
+                            _this.onImageLoaded(event, $(this), image);
+                        }
                     }
                 })
             )
@@ -191,7 +214,7 @@
         this.$element.append(item);
 
         opts.onGridItemRendered(item, image);
-    };
+    }
 
     ImagesGrid.prototype.renderViewAll = function() {
 
@@ -210,18 +233,18 @@
                 })
             )
         );
-    };
+    }
 
-    ImagesGrid.prototype.onWinResize = function(event) {
+    ImagesGrid.prototype.onWindowResize = function(event) {
         if (this.opts.align) {
             this.align();
         }
-    };
+    }
 
     ImagesGrid.prototype.onImageClick = function(event) {
         var imageIndex = $(event.currentTarget).data('index');
         this.modal.open(imageIndex);
-    };
+    }
 
     ImagesGrid.prototype.onImageLoaded = function(event, imageEl, image) {
 
@@ -231,11 +254,11 @@
 
         opts.onGridImageLoaded(event, imageEl, image);
 
-        if (this.imageLoadCount == this.$gridItems.length) {
+        if (this.imageLoadCount === this.$gridItems.length) {
             this.imageLoadCount = 0;
             this.onAllImagesLoaded()
         }
-    };
+    }
 
     ImagesGrid.prototype.onAllImagesLoaded = function() {
 
@@ -246,7 +269,7 @@
         }
 
         opts.onGridLoaded(this.$element);
-    };
+    }
 
     ImagesGrid.prototype.align = function() {
 
@@ -267,7 +290,7 @@
                 this.alignItems(this.$gridItems.slice(3));
                 break;
         }
-    };
+    }
 
     ImagesGrid.prototype.alignItems = function(items) {
 
@@ -275,7 +298,7 @@
             return item.find('img').height();
         });
 
-        var itemHeight = Math.min.apply(null, itemsHeight);
+        var normalizedHeight = Math.min.apply(null, itemsHeight);
 
         $(items).each(function() {
 
@@ -284,15 +307,20 @@
                 img = item.find('img'),
                 imgHeight = img.height();
 
-            imgWrap.height(itemHeight);
+            imgWrap.height(normalizedHeight);
 
-            if (imgHeight > itemHeight) {
-                var top = Math.floor((imgHeight - itemHeight) / 2);
+            if (imgHeight > normalizedHeight) {
+                var top = Math.floor((imgHeight - normalizedHeight) / 2);
                 img.css({ top: -top });
             }
-
         });
-    };
+    }
+
+    ImagesGrid.prototype.destroy = function() {
+        this.$window.off('resize',this.onWindowResize);
+        this.$element.empty();
+        //this.modal.destroy();
+    }
 
     /*
       ImagesGridModal constructor
