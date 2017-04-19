@@ -119,6 +119,12 @@ Callback function called on modal image click
 onModalImageClick: function(event, $img, image) { }
 ```
 
+##### **`onModalImageUpdate {function}`**
+Callback function called when modal image updated
+```javascript
+onModalImageUpdate: function($img, image) { }
+```
+
 ## Methods:
 
 ##### **modal.open**
@@ -140,4 +146,4 @@ $('#imgs').imagesGrid('destroy')
 ```
 
 ## Default options
-Default options can be found [here](https://github.com/taras-d/images-grid/blob/master/src/images-grid.js#L49-L69)
+Default options can be found [here](https://github.com/taras-d/images-grid/blob/master/src/images-grid.js#L49-L70)

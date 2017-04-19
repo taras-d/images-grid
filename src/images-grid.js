@@ -65,7 +65,8 @@
         onGridImageLoaded: $.noop,
         onModalOpen: $.noop,
         onModalClose: $.noop,
-        onModalImageClick: $.noop
+        onModalImageClick: $.noop,
+        onModalImageUpdate: $.noop
     };
 
     /**
@@ -124,7 +125,8 @@
             nextOnClick: opts.nextOnClick,
             onModalOpen: opts.onModalOpen,
             onModalClose: opts.onModalClose,
-            onModalImageClick: opts.onModalImageClick
+            onModalImageClick: opts.onModalImageClick,
+            onModalImageUpdate: opts.onModalImageUpdate
         });
     }
 
@@ -532,9 +534,11 @@
 
     ImagesGridModal.prototype.updateImage = function() {
 
-        var image = this.getImage(this.imageIndex);
+        var opts = this.opts,
+            image = this.getImage(this.imageIndex),
+            imageEl = this.$modal.find('.modal-image img');
 
-        this.$modal.find('.modal-image img').attr({
+        imageEl.attr({
             src: image.src,
             alt: image.alt,
             title: image.title
@@ -550,6 +554,8 @@
         }
 
         this.showLoader();
+
+        opts.onModalImageUpdate(imageEl, image);
     }
 
     ImagesGridModal.prototype.onImageClick = function(event, imageEl, image) {
