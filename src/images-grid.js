@@ -70,20 +70,20 @@
 
     /**
      * ImagesGrid
-     *   opts                    {object}   Grid options 
-     *   opts.element            {jQuery}   Element where to render images grid
-     *   opts.images             {array}    Array of images. Array item can be string or object { src, alt, title, caption }
-     *   opts.align              {boolean}  Align images with different height
-     *   opts.cells              {number}   Maximum number of cells (from 1 to 6)
-     *   opts.showViewAll        {string}   Show view all text:
-     *                                        'more'   - show if number of images greater than number of cells
-     *                                        'always' - always show
-     *                                        false    - never show
-     *   opts.getViewAllText     {function} Callback function returns text for "view all images" link
-     *   opts.onGridRendered     {function} Callback function fired when grid items added to the DOM
-     *   opts.onGridItemRendered {function} Callback function fired when grid item added to the DOM
-     *   opts.onGridLoaded       {function} Callback function fired when grid images loaded
-     *   opts.onGridImageLoaded  {function} Callback function fired when grid image loaded
+     *   opts                    - Grid options 
+     *   opts.element            - Element where to render images grid
+     *   opts.images             - Array of images. Array item can be string or object { src, alt, title, caption }
+     *   opts.align              - Align images with different height
+     *   opts.cells              - Maximum number of cells (from 1 to 6)
+     *   opts.showViewAll        - Show view all text:
+     *                                'more'   - show if number of images greater than number of cells
+     *                                'always' - always show
+     *                                false    - never show
+     *   opts.getViewAllText     - Callback function returns text for "view all images" link
+     *   opts.onGridRendered     - Callback function fired when grid items added to the DOM
+     *   opts.onGridItemRendered - Callback function fired when grid item added to the DOM
+     *   opts.onGridLoaded       - Callback function fired when grid images loaded
+     *   opts.onGridImageLoaded  - Callback function fired when grid image loaded
      */
 
     function ImagesGrid(opts) {
@@ -401,7 +401,7 @@
         }, {
             duration: 100,
             complete: function() {
-                opts.onModalOpen(this.$modal);
+                opts.onModalOpen(this.$modal, opts.images[this.imageIndex]);
             }.bind(this)
         });
     }

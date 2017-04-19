@@ -104,7 +104,7 @@ onGridImageLoaded: function(event, $img, image) { }
 ##### **`onModalOpen {function}`**
 Callback function called when modal opened
 ```javascript
-onModalOpen: function($modal) { }
+onModalOpen: function($modal, image) { }
 ```
 
 ##### **`onModalClose {function}`**
