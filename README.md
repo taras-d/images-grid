@@ -64,6 +64,12 @@ showViewAll: 'more'   // show if number of images greater than number of cells
              false    // never show
 ```
 
+##### **`viewAllStartIndex {number}`**
+Start image index when view all link clicked (default: 'auto')
+```javascript
+viewAllStartIndex: 'auto'
+```
+
 ##### **`getViewAllText {function}`**
 Callback function returns text for "view all images" link
 ```javascript
@@ -146,4 +152,4 @@ $('#imgs').imagesGrid('destroy')
 ```
 
 ## Default options
-Default options can be found [here](https://github.com/taras-d/images-grid/blob/master/src/images-grid.js#L49-L70)
+Default options can be found [here](https://github.com/taras-d/images-grid/blob/master/src/images-grid.js#L49-L71)

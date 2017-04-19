@@ -56,6 +56,7 @@
         align: false,
         nextOnClick: true,
         showViewAll: 'more',
+        viewAllStartIndex: 'auto',
         getViewAllText: function(imagesCount) {
             return 'View all ' + imagesCount + ' images';
         },
@@ -80,6 +81,7 @@
      *                                'more'   - show if number of images greater than number of cells
      *                                'always' - always show
      *                                false    - never show
+     *   opts.viewAllStartIndex  - Start image index when view all link clicked
      *   opts.getViewAllText     - Callback function returns text for "view all images" link
      *   opts.onGridRendered     - Callback function fired when grid items added to the DOM
      *   opts.onGridItemRendered - Callback function fired when grid item added to the DOM
@@ -238,7 +240,17 @@
 
     ImagesGrid.prototype.onImageClick = function(event) {
 
-        var imageIndex = $(event.currentTarget).data('index');
+        var opts = this.opts,
+            img = $(event.currentTarget),
+            imageIndex;
+
+        if (img.find('.view-all').length > 0 &&
+            typeof opts.viewAllStartIndex === 'number' ) {
+            imageIndex = opts.viewAllStartIndex;
+        } else {
+            imageIndex = img.data('index');
+        }
+
         this.modal.open(imageIndex);
     }
 
