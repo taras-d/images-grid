@@ -16,6 +16,7 @@
                 
                 if (this._imgGrid instanceof ImagesGrid) {
                     this._imgGrid.destroy();
+                    delete this._imgGrid;
                 }
 
                 var opts = $.extend({}, $.fn.imagesGrid.defaults, options);
@@ -36,6 +37,7 @@
                         break;
                     case 'destroy':
                         this._imgGrid.destroy();
+                        delete this._imgGrid;
                         break;
                 }
             }
@@ -106,14 +108,13 @@
 
     ImagesGrid.prototype.init = function()  {
 
-        this.applyGridClass();
+        this.setGridClass();
         this.renderGridItems();
-        this.initModal();
 
         this.$window.on('resize', this.onWindowResize);
     }
 
-    ImagesGrid.prototype.initModal = function() {
+    ImagesGrid.prototype.createModal = function() {
 
         var opts = this.opts;
 
@@ -126,16 +127,7 @@
         });
     }
 
-    ImagesGrid.prototype.applyGridClass = function() {
-
-        // TODO: Move it to the destroy method
-        // Remove previous grid class
-        this.$element.removeClass(function(index, classNames) {
-            if (/(imgs-grid-\d)/.test(classNames)) {
-                // TODO: Don't use RegExp.$1..
-                return RegExp.$1;
-            }
-        });
+    ImagesGrid.prototype.setGridClass = function() {
 
         var opts = this.opts,
             imgsLen = opts.images.length,
@@ -242,7 +234,13 @@
     }
 
     ImagesGrid.prototype.onImageClick = function(event) {
+
+        if (!this.modal) {
+            this.createModal();
+        }
+
         var imageIndex = $(event.currentTarget).data('index');
+
         this.modal.open(imageIndex);
     }
 
@@ -317,8 +315,12 @@
     }
 
     ImagesGrid.prototype.destroy = function() {
+
         this.$window.off('resize',this.onWindowResize);
-        this.$element.empty();
+
+        this.$element.empty()
+            .removeClass('imgs-grid imgs-grid-' + this.$gridItems.length);
+
         //this.modal.destroy();
     }
 
