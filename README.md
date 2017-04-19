@@ -140,5 +140,4 @@ $('#imgs').imagesGrid('destroy')
 ```
 
 ## Default options
-[List of default options](https://github.com/taras-d/images-grid/blob/master/src/images-grid.js#L53-L69)
-```
+Default options can be found [here](https://github.com/taras-d/images-grid/blob/master/src/images-grid.js#L49-L69)
