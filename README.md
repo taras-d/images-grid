@@ -22,8 +22,8 @@ Init Images grid
 
 ## Options
 
-##### **`images {Array}`**
-Array of images URLs. Array element can be string or object
+##### **`images {array}`**
+Array of images. Array element can be string or object
 ```javascript
 images: [
   'hello.png',
@@ -37,102 +37,108 @@ images: [
 ]
 ```
 
-##### **`cells {Number}`**
-Number of cells in the grid. Min 1, max 6. (default: 5)
+##### **`cells {number}`**
+Maximum number of cells (min: 1, max: 6, default: 5)
 ```javascript
 cells: 5
 ```
 
-##### **`align {Boolean}`**
-Aling diff-size images (default: false)
+##### **`align {boolean}`**
+Align images with different height (default: false)
 ```javascript
 align: false
 ```
 
-##### **`nextOnClick {Boolean}`**
-Show next image when user click on modal image (default: true)
+##### **`nextOnClick {boolean}`**
+Show next image when click on modal image (default: true)
 ```javascript
 nextOnClick: true
 ```
 
-##### **`showViewAll {String|Boolean}`**
+##### **`showViewAll {string|boolean}`**
 Show view all text (default: 'more')
 ```javascript
 // Possible values:
-showViewAll: 'more'   // show if amount of images greater than cells
+showViewAll: 'more'   // show if number of images greater than number of cells
              'always' // always show
              false    // never show
 ```
 
-##### **`getViewAllText {Function}`**
-Function returns text for "view all images" link
+##### **`getViewAllText {function}`**
+Callback function returns text for "view all images" link
 ```javascript
 getViewAllText: function(imagesCount) {
   return 'View all ' + imagesCount + ' images';
 }
 ```
 
-#### Events:
+#### Grid Events:
 
-##### **`onGridRendered {Function}`**
-Function called when grid items added to the DOM
+##### **`onGridRendered {function}`**
+Callback function fired when grid items added to the DOM
 ```javascript
 onGridRendered: function($grid) { }
 ```
 
-##### **`onGridItemRendered {Function}`**
-Function called when grid item added to the DOM
+##### **`onGridItemRendered {function}`**
+Callback function fired when grid item added to the DOM
 ```javascript
 onGridItemRendered: function($item, image) { }
 ```
 
-##### **`onGridLoaded {Function}`**
-Function called when grid images loaded
+##### **`onGridLoaded {function}`**
+Callback function fired when grid images loaded
 ```javascript
 onGridLoaded: function($grid) { }
 ```
 
-##### **`onGridImageLoaded {Function}`**
-Function called when grid image loaded
+##### **`onGridImageLoaded {function}`**
+Callback function fired when grid image loaded
 ```javascript
 onGridImageLoaded: function(event, $img, image) { }
 
 ```
-##### **`onModalOpen {Function}`**
-Function called when modal opened
+
+#### Modal Events:
+
+##### **`onModalOpen {function}`**
+Callback function called when modal opened
 ```javascript
 onModalOpen: function($modal) { }
 ```
 
-##### **`onModalClose {Function}`**
-Function called when modal closed
+##### **`onModalClose {function}`**
+Callback function called when modal closed
 ```javascript
 onModalClose: function() { }
 ```
 
-##### **`onModalImageClick {Function}`**
-Function called on modal image click
+##### **`onModalImageClick {function}`**
+Callback function called on modal image click
 ```javascript
 onModalImageClick: function(event, $img, image) { }
 ```
 
-## Methods
+## Methods:
 
-##### **`.imagesGrid('modal.open', 0)`**
-Open modal window. Second parameter is image index
+##### **modal.open**
+Open modal window (optional second parameter is image index)
 ```javascript
 $('#imgs').imagesGrid('modal.open', 0)
 ```
 
-##### **`.imagesGrid('modal.close')`**
+##### **modal.close**
 Close modal window
 ```javascript
 $('#imgs').imagesGrid('modal.close')
 ```
 
-## Default options
-Default options can be overridden
+##### **destroy**
+Destroy images grid (remove DOM nodes and event listeners)
 ```javascript
-// Override number of cells
-$.fn.imagesGrid.defaults.cells = 6;
+$('#imgs').imagesGrid('destroy')
+```
+
+## Default options
+[List of default options](https://github.com/taras-d/images-grid/blob/master/src/images-grid.js#L53-L69)
 ```
