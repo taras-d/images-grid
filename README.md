@@ -29,10 +29,11 @@ images: [
   'hello.png',
   'preview.jpg',
   {
-    src: 'car.png',      // url
-    alt: 'Car',          // alternative text
-    title: 'Car',        // title
-    caption: 'Supercar'  // modal caption
+    src: 'car.png',              // url
+    alt: 'Car',                  // alternative text
+    title: 'Car',                // title
+    caption: 'Supercar',         // modal caption
+    thumbnail: 'cap-preview.png' // thumbnail image url
   }
 ]
 ```

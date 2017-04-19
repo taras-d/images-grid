@@ -74,7 +74,7 @@
      * ImagesGrid
      *   opts                    - Grid options 
      *   opts.element            - Element where to render images grid
-     *   opts.images             - Array of images. Array item can be string or object { src, alt, title, caption }
+     *   opts.images             - Array of images. Array item can be string or object { src, alt, title, caption, thumbnail }
      *   opts.align              - Align images with different height
      *   opts.cells              - Maximum number of cells (from 1 to 6)
      *   opts.showViewAll        - Show view all text:
@@ -179,7 +179,7 @@
             _this = this;
 
         if ($.isPlainObject(image)) {
-            src = image.src;
+            src = image.thumbnail || image.src;
             alt = image.alt || '';
             title = image.title || '';
         }
