@@ -57,6 +57,7 @@
         nextOnClick: true,
         showViewAll: 'more',
         viewAllStartIndex: 'auto',
+        loading: 'loading...',
         getViewAllText: function(imagesCount) {
             return 'View all ' + imagesCount + ' images';
         },
@@ -123,6 +124,7 @@
         var opts = this.opts;
 
         this.modal = new ImagesGridModal({
+            loading: opts.loading,
             images: opts.images,
             nextOnClick: opts.nextOnClick,
             onModalOpen: opts.onModalOpen,
@@ -465,7 +467,7 @@
                     }),
                     $('<div>', {
                         class: 'modal-loader',
-                        text: 'loading...'
+                        html: opts.loading
                     })
                 ),
                 $('<div>', {
