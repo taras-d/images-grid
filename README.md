@@ -56,6 +56,12 @@ Show next image when click on modal image (default: true)
 nextOnClick: true
 ```
 
+##### **`loading {string}`**
+Image loading text (default: 'loading...')
+```javascript
+loading: 'loading...'
+```
+
 ##### **`showViewAll {string|boolean}`**
 Show view all text (default: 'more')
 ```javascript
@@ -153,4 +159,4 @@ $('#imgs').imagesGrid('destroy')
 ```
 
 ## Default options
-Default options can be found [here](https://github.com/taras-d/images-grid/blob/master/src/images-grid.js#L49-L71)
+Default options can be found [here](https://github.com/taras-d/images-grid/blob/master/src/images-grid.js#L49-L72)

@@ -341,6 +341,7 @@
      *  opts                    - Modal options
      *  opts.images             - Array of images
      *  opts.nextOnClick        - Show next image when click on modal image
+     *  opts.loading            - Image loading text
      *  opts.onModalOpen        - Callback function called when modal opened
      *  opts.onModalClose       - Callback function called when modal closed
      *  opts.onModalImageClick  - Callback function called on modal image click
