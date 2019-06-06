@@ -5,7 +5,7 @@ Images grid jQuery plugin
 [Demo](https://taras-d.github.io/images-grid)
 
 ## Usage
-Add Images grid plugin to html page
+Add Images grid plugin to html page (or use [CDN links](#cdn-links))
 ```html
 <script src="src/images-grid.js"></script>
 <link rel="stylesheet" href="src/images-grid.css">
@@ -160,3 +160,9 @@ $('#imgs').imagesGrid('destroy')
 
 ## Default options
 Default options can be found [here](https://github.com/taras-d/images-grid/blob/master/src/images-grid.js#L49-L72)
+
+## CDN links
+```html
+<script src="https://cdn.jsdelivr.net/gh/taras-d/images-grid/src/images-grid.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/taras-d/images-grid/src/images-grid.min.css">
+```
