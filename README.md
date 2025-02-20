@@ -2,7 +2,7 @@
 
 Images grid jQuery plugin
 
-[Demo](https://taras-d.github.io/images-grid)
+[Demo](https://taras-d.github.io/demo/images-grid)
 
 ## Usage
 Add Images grid plugin to html page (or use [CDN links](#cdn-links))
